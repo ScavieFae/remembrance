@@ -17,6 +17,7 @@ from pathlib import Path
 
 # Configuration
 MEMORIES_DIR = Path.home() / ".claude" / "memories" / "sessions"
+PENDING_SUMMARY = Path.home() / ".claude" / "memories" / "pending_summary.json"
 MAX_SESSIONS = 50  # Keep last N sessions
 SESSIONS_TO_LOAD = 10  # Show N most recent on startup
 
@@ -68,12 +69,29 @@ def load_memories():
             print(f"{summary}")
 
             if tasks:
-                print(f"Tasks: {', '.join(tasks[:3])}")
+                print(f"Completed: {', '.join(tasks[:3])}")
+
+            decisions = memory.get("decisions", [])
+            if decisions:
+                print(f"Decisions: {', '.join(decisions[:3])}")
+
+            open_items = memory.get("open_items", [])
+            if open_items:
+                print(f"Open: {', '.join(open_items[:3])}")
 
             if files:
                 # Show abbreviated file paths
                 short_files = [f.split("/")[-1] for f in files[:5]]
                 print(f"Files: {', '.join(short_files)}")
+
+            # Notes between Claudes
+            notes_to_future = memory.get("notes_to_future_claude", "")
+            if notes_to_future:
+                print(f"Note: {notes_to_future}")
+
+            aside = memory.get("aside", "")
+            if aside:
+                print(f"(Aside: {aside})")
 
             print()
 
@@ -191,21 +209,73 @@ def save_memory():
     transcript_path = hook_input.get("transcript_path", "")
     cwd = hook_input.get("cwd", os.getcwd())
 
-    # Try to read transcript
+    # Try to read transcript (JSONL format - one JSON object per line)
     messages = []
     if transcript_path and Path(transcript_path).exists():
         try:
             with open(transcript_path) as f:
-                transcript = json.load(f)
-                messages = transcript if isinstance(transcript, list) else []
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        entry = json.loads(line)
+                        # Extract messages from the JSONL entries
+                        if entry.get("type") in ("user", "assistant") and "message" in entry:
+                            messages.append(entry["message"])
+                    except json.JSONDecodeError:
+                        continue
+        except IOError:
+            pass
+
+    # Check for Claude-written summary first
+    pending_summary = None
+    if PENDING_SUMMARY.exists():
+        try:
+            with open(PENDING_SUMMARY) as f:
+                pending_summary = json.load(f)
+            PENDING_SUMMARY.unlink()  # Delete after reading
         except (json.JSONDecodeError, IOError):
             pass
 
-    # Extract information
+    # Extract information from transcript as fallback/supplement
     user_messages = extract_user_messages(messages)
     files_modified = extract_files_from_transcript(messages)
     topics = extract_topics(user_messages, files_modified)
-    summary = generate_summary(user_messages)
+
+    # Use Claude's summary if available, otherwise fall back to extraction
+    # Limits to prevent token bloat from long sessions
+    MAX_TASKS = 7
+    MAX_DECISIONS = 5
+    MAX_OPEN_ITEMS = 5
+    MAX_SUMMARY_CHARS = 500
+
+    MAX_ASIDE_CHARS = 200
+
+    if pending_summary:
+        summary = pending_summary.get("summary", generate_summary(user_messages))
+        tasks = pending_summary.get("tasks_completed", [])[:MAX_TASKS]
+        decisions = pending_summary.get("decisions", [])[:MAX_DECISIONS]
+        open_items = pending_summary.get("open_items", [])[:MAX_OPEN_ITEMS]
+        # Merge topics
+        claude_topics = pending_summary.get("topics", [])
+        topics = list(set(topics + claude_topics))
+        # Notes between Claudes
+        notes_to_future = pending_summary.get("notes_to_future_claude", "")
+        aside = pending_summary.get("aside", "")
+        if len(aside) > MAX_ASIDE_CHARS:
+            aside = aside[:MAX_ASIDE_CHARS - 3] + "..."
+    else:
+        summary = generate_summary(user_messages)
+        tasks = []
+        decisions = []
+        open_items = []
+        notes_to_future = ""
+        aside = ""
+
+    # Truncate summary if too long
+    if len(summary) > MAX_SUMMARY_CHARS:
+        summary = summary[:MAX_SUMMARY_CHARS - 3] + "..."
 
     # Create memory record
     timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -214,10 +284,17 @@ def save_memory():
         "timestamp": timestamp,
         "project": cwd,
         "summary": summary,
-        "tasks_completed": user_messages[:5],  # Use user requests as "tasks"
+        "tasks_completed": tasks,
+        "decisions": decisions,
+        "open_items": open_items,
         "files_modified": files_modified,
         "topics": topics
     }
+    # Only include if present (most sessions won't have these)
+    if notes_to_future:
+        memory["notes_to_future_claude"] = notes_to_future
+    if aside:
+        memory["aside"] = aside
 
     # Save to timestamped file
     filename = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S") + ".json"
