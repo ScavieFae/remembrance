@@ -5,7 +5,8 @@ Handles persistent memory across sessions via hooks.
 
 Usage:
   python3 memory.py load    # SessionStart: Load recent memories
-  python3 memory.py save    # SessionEnd: Save session summary
+  python3 memory.py save    # SessionEnd: Save session diary
+  python3 memory.py prompt  # PreCompact: Output diary prompt reminder
 """
 
 import json
@@ -61,12 +62,13 @@ def load_memories():
             # Shorten home directory for readability
             project = project.replace(str(Path.home()), "~")
 
-            summary = memory.get("summary", "No summary available")
+            # Support both old 'summary' and new 'diary' field
+            diary = memory.get("diary", memory.get("summary", "No entry available"))
             tasks = memory.get("tasks_completed", [])
             files = memory.get("files_modified", [])
 
             print(f"[{timestamp} - {project}]")
-            print(f"{summary}")
+            print(f"{diary}")
 
             if tasks:
                 print(f"Completed: {', '.join(tasks[:3])}")
@@ -88,10 +90,6 @@ def load_memories():
             notes_to_future = memory.get("notes_to_future_claude", "")
             if notes_to_future:
                 print(f"Note: {notes_to_future}")
-
-            aside = memory.get("aside", "")
-            if aside:
-                print(f"(Aside: {aside})")
 
             print()
 
@@ -243,17 +241,16 @@ def save_memory():
     files_modified = extract_files_from_transcript(messages)
     topics = extract_topics(user_messages, files_modified)
 
-    # Use Claude's summary if available, otherwise fall back to extraction
+    # Use Claude's diary if available, otherwise fall back to extraction
     # Limits to prevent token bloat from long sessions
     MAX_TASKS = 7
     MAX_DECISIONS = 5
     MAX_OPEN_ITEMS = 5
-    MAX_SUMMARY_CHARS = 500
-
-    MAX_ASIDE_CHARS = 200
+    MAX_DIARY_CHARS = 800  # Diary entries can be longer than old summaries
 
     if pending_summary:
-        summary = pending_summary.get("summary", generate_summary(user_messages))
+        # Support both old 'summary' and new 'diary' field
+        diary = pending_summary.get("diary", pending_summary.get("summary", generate_summary(user_messages)))
         tasks = pending_summary.get("tasks_completed", [])[:MAX_TASKS]
         decisions = pending_summary.get("decisions", [])[:MAX_DECISIONS]
         open_items = pending_summary.get("open_items", [])[:MAX_OPEN_ITEMS]
@@ -262,20 +259,18 @@ def save_memory():
         topics = list(set(topics + claude_topics))
         # Notes between Claudes
         notes_to_future = pending_summary.get("notes_to_future_claude", "")
-        aside = pending_summary.get("aside", "")
-        if len(aside) > MAX_ASIDE_CHARS:
-            aside = aside[:MAX_ASIDE_CHARS - 3] + "..."
+        auto_generated = False
     else:
-        summary = generate_summary(user_messages)
+        diary = generate_summary(user_messages)
         tasks = []
         decisions = []
         open_items = []
         notes_to_future = ""
-        aside = ""
+        auto_generated = True
 
-    # Truncate summary if too long
-    if len(summary) > MAX_SUMMARY_CHARS:
-        summary = summary[:MAX_SUMMARY_CHARS - 3] + "..."
+    # Truncate diary if too long
+    if len(diary) > MAX_DIARY_CHARS:
+        diary = diary[:MAX_DIARY_CHARS - 3] + "..."
 
     # Create memory record
     timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -283,18 +278,18 @@ def save_memory():
         "session_id": session_id,
         "timestamp": timestamp,
         "project": cwd,
-        "summary": summary,
+        "diary": diary,
         "tasks_completed": tasks,
         "decisions": decisions,
         "open_items": open_items,
         "files_modified": files_modified,
         "topics": topics
     }
-    # Only include if present (most sessions won't have these)
+    # Only include if present
     if notes_to_future:
         memory["notes_to_future_claude"] = notes_to_future
-    if aside:
-        memory["aside"] = aside
+    if auto_generated:
+        memory["auto_generated"] = True  # Flag so we know this wasn't Claude-written
 
     # Save to timestamped file
     filename = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S") + ".json"
@@ -325,9 +320,26 @@ def cleanup_old_sessions(memories_dir):
             pass
 
 
+def precompact_prompt():
+    """Output a diary prompt reminder for the PreCompact hook."""
+    # Check if Claude already wrote a diary entry this session
+    if PENDING_SUMMARY.exists():
+        print("(Diary entry already staged for this session.)")
+        sys.exit(0)
+
+    print("""
+=== Context Compacting Soon ===
+
+Before this session compacts, consider writing a diary entry. Use /diary or write directly to ~/.claude/memories/pending_summary.json
+
+What happened in this session? What did we struggle with, what shifted, what matters?
+""".strip())
+    sys.exit(0)
+
+
 def main():
     if len(sys.argv) < 2:
-        print("Usage: memory.py [load|save]", file=sys.stderr)
+        print("Usage: memory.py [load|save|prompt]", file=sys.stderr)
         sys.exit(1)
 
     command = sys.argv[1].lower()
@@ -336,6 +348,8 @@ def main():
         load_memories()
     elif command == "save":
         save_memory()
+    elif command == "prompt":
+        precompact_prompt()
     else:
         print(f"Unknown command: {command}", file=sys.stderr)
         sys.exit(1)

@@ -12,6 +12,17 @@
         ]
       }
     ],
+    "PreCompact": [
+      {
+        "matcher": "auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/memory.py\" prompt"
+          }
+        ]
+      }
+    ],
     "SessionEnd": [
       {
         "hooks": [
