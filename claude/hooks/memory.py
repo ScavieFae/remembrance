@@ -246,7 +246,7 @@ def save_memory():
     MAX_TASKS = 7
     MAX_DECISIONS = 5
     MAX_OPEN_ITEMS = 5
-    MAX_DIARY_CHARS = 800  # Diary entries can be longer than old summaries
+    MAX_DIARY_CHARS = 1500  # Diary entries can be longer than old summaries
 
     if pending_summary:
         # Support both old 'summary' and new 'diary' field
