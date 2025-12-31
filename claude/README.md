@@ -5,8 +5,8 @@ Personal Claude Code setup with persistent memory across sessions.
 ## Quick Start (New Machine)
 
 ```bash
-git clone <your-repo-url> ~/dotfiles
-cd ~/dotfiles/claude
+git clone https://github.com/ScavieFae/remembrance.git ~/remembrance
+cd ~/remembrance/claude
 ./install.sh
 ```
 
@@ -45,8 +45,8 @@ Persistent memory system that:
 
 ```
 ~/.claude/
-├── settings.json      # → symlink to dotfiles/claude/settings.json
-├── hooks/             # → symlink to dotfiles/claude/hooks/
+├── settings.json      # → symlink to remembrance/claude/settings.json
+├── hooks/             # → symlink to remembrance/claude/hooks/
 │   └── memory.py
 ├── memories/          # LOCAL - never synced
 │   └── sessions/
