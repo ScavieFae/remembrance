@@ -19,6 +19,19 @@
           {
             "type": "command",
             "command": "python3 \"$HOME/.claude/hooks/memory.py\" prompt"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/log-compaction.py"
+          }
+        ]
+      },
+      {
+        "matcher": "manual",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/log-compaction.py"
           }
         ]
       }
