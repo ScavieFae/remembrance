@@ -45,6 +45,10 @@ Gmail's Important flag is one input, never the gate (measured 63% precision / 62
 - **Cards are context slots; search is fallback.** Facts from cards/blurbs, color from search.
 - Preserve en-dashes. No "not X, but Y." Complete sentences over staccato.
 
+## Resilience
+
+Bank the pull before triage: write raw fetched data to the scratchpad (batch files) so an API failure mid-round never re-costs the Gmail I/O. Checkpoint triage progress to `triage-checkpoint.md` as you go. On repeated 529s, back off (4 min, then 10), and if a model tier keeps failing, respawn the work on a different tier against the banked data instead of resuming into the overload.
+
 ## Cadence
 
 Morning round before 8 AM, optional EOD sweep. Skip-days are fine. If Mattie skips the brief twice, the brief is wrong — redesign it, don't re-send it.
