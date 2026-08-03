@@ -25,6 +25,12 @@ Three sources, in this order:
 
 So: **tag every extracted claim** `[transcript-verbatim]` or `[pocket-generated]` as you pull it. Only `[transcript-verbatim]` claims enter the Notion card, the email, or Nexudus. `[pocket-generated]` material fills gaps only when explicitly marked as inference in the card ("Pocket summary suggests X — unconfirmed"). When the two disagree, the verbatim wins and the disagreement itself is worth a line.
 
+**Recency rule — for quantities, commitments, and prices, the LAST statement wins.** Tour conversations converge late: they explore early and close at the end, while summarizers over-weight early content. Before finalizing any number, scan the final ~10 minutes of transcript for the close, recap, or steer, and let it supersede earlier read-backs.
+
+- **Singular articles carry data.** "grabbing a robot bay… grabbing a floating desk" is a one-plus-one configuration even with no numeral in it. Don't let an earlier explicit count outrank a later directional close just because the earlier one is quantified.
+- **Documented case, 2026-08-03** (the same tour as the provenance example above): the read-back at [15:51] said "one to two robot bays"; the close at [30:48] settled on one bay plus one floating desk. Extraction anchored on the earlier quantified statement and Mattie had to correct it in the room.
+- **If Mattie spoke an end-of-tour recap to the recorder, that recap is authoritative for the whole configuration** — take it over anything assembled from earlier fragments.
+
 If there's no recording, say so and build the card from the email thread plus whatever Mattie recalls. A thin card with honest gaps beats a full one built on generated text.
 
 ## Step 2 — Route by tour outcome
