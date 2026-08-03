@@ -35,18 +35,35 @@ The tour's outcome picks the template. Templates live in
 | Tour outcome | Template | Notes |
 |---|---|---|
 | Tenant prospect, Mattie sends | **#2** Toured → intake form | Personalized callback slot is Mattie's move. Subject: "Good having you at Mission Robotics — the numbers". CC morrigan@. |
-| Tenant prospect, Morrigan sends | **#2b** Morrigan variant | **Drop the callback slot** — general template is Morrigan's default. Sends via the AgentMail API (`morrigan@missionrobotics.ai` is not a verified Superhuman send-as alias), CC mattie@. |
+| Tenant prospect, Morrigan sends | **#2b** Morrigan variant | **Drop the callback slot** — general template is Morrigan's default. Sends via the AgentMail API (`morrigan@missionrobotics.ai` is not a verified Superhuman send-as alias), CC mattie@. Register note below. |
 | Community / peer, not a space fit | **#6** Toured → community keep-warm | Do NOT pitch space. Notion Category = Community, keep out of the tenant forecast. |
 | Too early / pre-idea, still finding the wedge | **#8** Curated list | Add to the Luma `curated` contact tag per the distribution runbook. Distinct from #5 — #5 is a defined idea with wrong timing, #8 is no defined idea yet. |
 | Not a fit — unfunded, wrong timing, wrong stage | **#5** Graceful keep-warm | Set a concrete revisit trigger **and a date**. This is a "later," not a "no." |
 
 If the tour outcome is genuinely ambiguous, say which two templates are in play and what fact would decide it — don't pick by feel.
 
+**Morrigan's register is closer to `lee-write` than to `executive-email`** — clear, succinct, no weeds. The two overlap, but where they diverge, go Lee: every sentence carries a link, a decision, or new information, and nothing carries warmth for its own sake. Morrigan acknowledges, states the facts, gives the link, hands off. The personalized move is Mattie's, not hers.
+
 ## Step 3 — Draft the followup
 
 Compose from the template's blocks (Pricing / Events / Intake-CTA). Voice is MR: direct, operator-to-operator, anti-corporate — `operation-logvy/soul.md` and `fodder.md` if a draft drifts.
 
-**Every specific claim in the draft traces to a `[transcript-verbatim]` source.** If the callback slot needs a detail you only have from a Pocket summary, leave the slot generic rather than assert something they didn't say. A wrong callback in the first line is worse than no callback.
+**The post-tour email shape (Mattie, 2026-08-03).** Four parts, this order:
+
+```
+Hey <NAME>, thanks for coming by today.
+<Tally / next-step info>
+<Notes specific to the team — factual, useful>
+<CTA>
+```
+
+**Simple and short.** Not terse, not chopped into fragments — complete sentences carrying only what's needed. Length comes off by cutting what the recipient doesn't need, never by compressing sentences into stubs.
+
+**HARD RULE: no anodyne mirroring.** Lines of the form "here's a thing we talked about, I'm thinking of…" are banned. This is structural, not taste — mirroring their own words back at them states no fact, makes no ask, and moves nothing, so it breaks the what / so-what / now-what spine the whole message runs on. It reads as rapport performance, and the market smells it.
+
+**A team-specific line earns its place only by carrying information they need.** The test: could they have written this sentence themselves? If yes, cut it. The configuration they discussed, priced out — that earns its place. "I love that you're after the room, not just desks" does not; it hands them back their own sentiment. When you have no informational team-specific line, **omit the slot entirely** — the email is complete without it.
+
+**Every specific claim in the draft traces to a `[transcript-verbatim]` source.** If the team-specific line needs a detail you only have from a Pocket summary, drop the line rather than assert something they didn't say. A wrong fact in the opening is worse than no line at all.
 
 **Staging rule: the draft is presented to Mattie for review, and nothing sends without her explicit go.** Mattie-sent drafts stage into Gmail Drafts via the compose-scope token. Morrigan sends go out via AgentMail only on an explicit main-thread go — surface the exact payload first.
 
