@@ -43,7 +43,7 @@ Voice is MR: direct, operator-to-operator, anti-corporate. Read `operation-logvy
 
 Pull from the **Common answers (FAQ bank)** in `pipeline-followups.md`: pricing, what's included, capacity, community value-prop, move-in, robots/embodiments. The FAQ pricing is current; the onesheet is stale — trust the bank.
 
-**The close lever is the 6-month commitment discount.** Pricing went term-gated (month-to-month vs 6-month rate) on 2026-07-06 — the old date-gated "lock the rate before July 15" lever is retired, and the pre-step-up numbers ($200 / $400 / $750) are dead. Never quote them. People quoted under the old structure keep their quoted number. The Embodied Metal Hackathon ran July 17-19; it is a past event, not an upcoming draw.
+**Six-month is the standard term** — see the **Pricing block** in `pipeline-followups.md` for the current single-source numbers and change history (MTM retired 2026-08-03; old date-gated step-up lever retired 2026-07-06, pre-step-up numbers dead — never quote them). People quoted under an old structure keep their quoted number. The Embodied Metal Hackathon ran July 17-19; it is a past event, not an upcoming draw.
 
 ## Updating the Prospects Notion DB
 
