@@ -41,9 +41,9 @@ Voice is MR: direct, operator-to-operator, anti-corporate. Read `operation-logvy
 
 ## Answering a prospect question
 
-Pull from the **Common answers (FAQ bank)** in `pipeline-followups.md`: pricing (current rates vs the July 15 step-up), what's included, capacity, community value-prop, move-in, the hackathon (Embodied Metal, July 17–19), robots/embodiments. The FAQ pricing is current; the onesheet is stale — trust the bank.
+Pull from the **Common answers (FAQ bank)** in `pipeline-followups.md`: pricing, what's included, capacity, community value-prop, move-in, robots/embodiments. The FAQ pricing is current; the onesheet is stale — trust the bank.
 
-The July 15 pricing step-up is a time-boxed close lever — use on warm leads now, retire after July 15.
+**The close lever is the 6-month commitment discount.** Pricing went term-gated (month-to-month vs 6-month rate) on 2026-07-06 — the old date-gated "lock the rate before July 15" lever is retired, and the pre-step-up numbers ($200 / $400 / $750) are dead. Never quote them. People quoted under the old structure keep their quoted number. The Embodied Metal Hackathon ran July 17-19; it is a past event, not an upcoming draw.
 
 ## Updating the Prospects Notion DB
 
